@@ -2,183 +2,215 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
-import json
+import base64
 import os
 
-# =========================
-# CONFIGURAÇÃO DA PÁGINA
-# =========================
 st.set_page_config(
-    page_title="Triagem de Bem-Estar Ocupacional",
-    page_icon="🌿",
+    page_title="Mind In Fit | Triagem de Bem-Estar",
+    page_icon="🧠",
     layout="centered"
 )
 
-# =========================
-# ESTILO VISUAL
-# =========================
-st.markdown("""
+# ── Logo em base64 ──────────────────────────────────────────
+def get_logo_base64():
+    logo_path = os.path.join(os.path.dirname(__file__), "logo_mindinfit.jpeg")
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    return None
+
+logo_b64 = get_logo_base64()
+logo_html = f'<img src="data:image/jpeg;base64,{logo_b64}" class="logo" alt="Mind In Fit">' if logo_b64 else '<span class="logo-text">MIND IN FIT</span>'
+
+# ── CSS ─────────────────────────────────────────────────────
+st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-}
+html, body, [class*="css"] {{
+    font-family: 'Barlow', sans-serif;
+    background-color: #0D0D0D;
+    color: #F0EDE8;
+}}
 
-.main {
-    background-color: #F5F2EE;
-}
+.main {{ background-color: #0D0D0D; }}
+h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; letter-spacing: 0.02em; }}
 
-h1, h2, h3 {
-    font-family: 'DM Serif Display', serif;
-    color: #1C1917;
-}
+/* ── HEADER ── */
+.header {{
+    background: #0D0D0D;
+    border-bottom: 3px solid #E8470A;
+    padding: 24px 0 20px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}}
 
-/* Cabeçalho hero */
-.hero {
-    background: linear-gradient(135deg, #1C1917 0%, #292524 60%, #3D2F26 100%);
-    border-radius: 20px;
-    padding: 48px 40px;
-    margin-bottom: 32px;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
+.logo {{ height: 52px; object-fit: contain; }}
+.logo-text {{ font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; color: #E8470A; letter-spacing: 0.05em; }}
 
-.hero::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    background: rgba(250,204,21,0.08);
-}
-
-.hero h1 {
-    color: white;
-    font-size: 2rem;
-    margin-bottom: 8px;
-}
-
-.hero p {
-    color: #D6D3D1;
-    font-size: 0.95rem;
-    margin: 0;
-}
-
-.hero .badge {
-    display: inline-block;
-    background: rgba(250,204,21,0.15);
-    border: 1px solid rgba(250,204,21,0.3);
-    color: #FDE68A;
-    font-size: 0.75rem;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 16px;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: 0.05em;
+.header-label {{
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-}
+    color: #666;
+    text-align: right;
+    line-height: 1.4;
+}}
 
-/* Cards de seção */
-.section-card {
-    background: white;
-    border-radius: 16px;
+/* ── HERO ── */
+.hero {{
+    border-left: 5px solid #E8470A;
+    padding: 28px 32px;
+    background: #161616;
+    margin-bottom: 32px;
+}}
+
+.hero .eyebrow {{
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #E8470A;
+    margin-bottom: 10px;
+}}
+
+.hero h1 {{
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color: #F0EDE8;
+}}
+
+.hero p {{
+    color: #999;
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.6;
+}}
+
+/* ── SECTION ── */
+.section {{
+    background: #161616;
+    border: 1px solid #222;
+    border-top: 3px solid #E8470A;
+    border-radius: 2px;
     padding: 28px;
     margin-bottom: 20px;
-    border: 1px solid #E7E5E4;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
+}}
 
-/* Resultado */
-.result-card {
-    border-radius: 20px;
+.section-title {{
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #E8470A;
+    margin-bottom: 20px;
+}}
+
+/* ── RESULT ── */
+.result {{
+    border: 2px solid;
     padding: 36px;
     margin: 24px 0;
     text-align: center;
-}
+    position: relative;
+    overflow: hidden;
+}}
+.result::before {{
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px; height: 100%;
+    background: currentColor;
+}}
+.result-baixo   {{ border-color: #22C55E; color: #22C55E; background: #0D1A12; }}
+.result-atencao {{ border-color: #EAB308; color: #EAB308; background: #1A1700; }}
+.result-alto    {{ border-color: #E8470A; color: #E8470A; background: #1A0D07; }}
+.result-elevado {{ border-color: #EF4444; color: #EF4444; background: #1A0707; }}
+.result h2 {{ font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; margin: 0 0 4px; }}
+.result h3 {{ font-size: 1.1rem; font-weight: 600; margin: 0 0 12px; letter-spacing: 0.1em; text-transform: uppercase; }}
+.result p  {{ color: #999; font-size: 0.9rem; margin: 0; }}
 
-.result-baixo  { background: linear-gradient(135deg, #DCFCE7, #BBF7D0); border: 2px solid #86EFAC; }
-.result-atencao { background: linear-gradient(135deg, #FEF9C3, #FEF08A); border: 2px solid #FDE047; }
-.result-alto   { background: linear-gradient(135deg, #FFEDD5, #FED7AA); border: 2px solid #FDBA74; }
-.result-elevado { background: linear-gradient(135deg, #FEE2E2, #FECACA); border: 2px solid #FCA5A5; }
+/* ── AVISO ── */
+.aviso {{
+    border-left: 4px solid #E8470A;
+    background: #1A0D07;
+    padding: 14px 18px;
+    font-size: 0.82rem;
+    color: #999;
+    margin-top: 24px;
+    line-height: 1.6;
+}}
 
-.result-card h2 { font-size: 2.5rem; margin-bottom: 4px; }
-.result-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
-.result-card p  { font-size: 0.95rem; margin: 0; }
-
-/* Barra de domínio */
-.dominio-bar {
-    background: #F5F2EE;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin: 8px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Botão principal */
-.stButton>button {
-    background: linear-gradient(135deg, #1C1917, #3D2F26) !important;
+/* ── BOTÃO ── */
+.stButton>button {{
+    background: #E8470A !important;
     color: white !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: 2px !important;
     padding: 14px 32px !important;
+    font-family: 'Barlow Condensed', sans-serif !important;
     font-size: 1rem !important;
-    font-weight: 500 !important;
-    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
     width: 100% !important;
     height: auto !important;
-    transition: all 0.2s !important;
-    letter-spacing: 0.02em !important;
-}
+    transition: opacity 0.2s !important;
+}}
+.stButton>button:hover {{ opacity: 0.85 !important; }}
 
-.stButton>button:hover {
-    opacity: 0.88 !important;
-    transform: translateY(-1px) !important;
-}
+/* ── INPUTS ── */
+.stTextInput>div>div>input,
+.stNumberInput>div>div>input {{
+    background: #1A1A1A !important;
+    border: 1px solid #2A2A2A !important;
+    border-radius: 2px !important;
+    color: #F0EDE8 !important;
+    font-family: 'Barlow', sans-serif !important;
+}}
+.stTextInput>div>div>input:focus,
+.stNumberInput>div>div>input:focus {{
+    border-color: #E8470A !important;
+    box-shadow: 0 0 0 1px #E8470A !important;
+}}
 
-/* Radio buttons */
-.stRadio > label { font-size: 0.95rem !important; }
-.stRadio > div { gap: 4px !important; }
+/* ── RADIO ── */
+.stRadio > label {{ color: #F0EDE8 !important; font-size: 0.9rem !important; }}
+.stRadio [data-testid="stMarkdownContainer"] p {{ color: #F0EDE8 !important; }}
 
-/* Aviso de rodapé */
-.aviso {
-    background: #FEF3C7;
-    border-left: 4px solid #F59E0B;
-    border-radius: 0 8px 8px 0;
-    padding: 12px 16px;
-    font-size: 0.85rem;
-    color: #78350F;
-    margin-top: 24px;
-}
+/* ── RODAPÉ ── */
+footer {{ visibility: hidden; }}
+div[data-testid="stSidebar"] {{ display: none; }}
 
-/* Progress */
-.progress-info {
-    text-align: right;
-    font-size: 0.8rem;
-    color: #78716C;
-    margin-bottom: 16px;
-}
-
-div[data-testid="stSidebar"] { display: none; }
+.rodape {{
+    text-align: center;
+    padding: 32px 0 16px;
+    font-size: 0.75rem;
+    color: #444;
+    letter-spacing: 0.05em;
+    border-top: 1px solid #1A1A1A;
+    margin-top: 40px;
+}}
 </style>
 """, unsafe_allow_html=True)
 
 
-# =========================
-# CONEXÃO GOOGLE SHEETS
-# =========================
+# ── CONEXÃO GOOGLE SHEETS ────────────────────────────────────
 @st.cache_resource
 def conectar_sheets():
-    """Conecta ao Google Sheets usando credenciais do secrets.toml"""
     try:
         scopes = [
             "https://www.googleapis.com/auth/spreadsheets",
             "https://www.googleapis.com/auth/drive"
         ]
-        # As credenciais ficam em .streamlit/secrets.toml
         creds_dict = dict(st.secrets["gcp_service_account"])
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         client = gspread.authorize(creds)
@@ -189,15 +221,12 @@ def conectar_sheets():
 
 
 def salvar_resposta(dados: dict):
-    """Salva uma linha de resposta na planilha"""
     client = conectar_sheets()
     if client is None:
         return False
     try:
         sheet_id = st.secrets["sheet_id"]
         spreadsheet = client.open_by_key(sheet_id)
-
-        # Aba 'respostas' — cria se não existir
         try:
             aba = spreadsheet.worksheet("respostas")
         except gspread.exceptions.WorksheetNotFound:
@@ -209,7 +238,6 @@ def salvar_resposta(dados: dict):
                 "fadiga_fisica", "exaustao_emocional", "recuperacao_saude"
             ]
             aba.append_row(cabecalho)
-
         linha = [
             dados["timestamp"], dados["nome"], dados["email"],
             dados["setor"], dados["cargo"], dados["idade"],
@@ -224,57 +252,47 @@ def salvar_resposta(dados: dict):
         return False
 
 
-# =========================
-# ESCALA DE RESPOSTAS
-# =========================
-ESCALA = {
-    "Nunca": 0,
-    "Raramente": 1,
-    "Às vezes": 2,
-    "Frequentemente": 3,
-    "Sempre": 4
-}
+# ── ESCALA & PERGUNTAS ────────────────────────────────────────
+ESCALA = {"Nunca": 0, "Raramente": 1, "Às vezes": 2, "Frequentemente": 3, "Sempre": 4}
 
-# =========================
-# PERGUNTAS POR DOMÍNIO
-# =========================
 DOMINIOS = {
-    "🏋️ Fadiga Física": [
+    "FADIGA FÍSICA": [
         "Você se sente cansado(a) ao acordar para trabalhar?",
         "Você sente esgotamento físico ao final do expediente?",
         "Você sente que seu trabalho drena sua energia?",
         "Você percebe dificuldade de recuperação mesmo após descanso?",
     ],
-    "😔 Exaustão Emocional": [
+    "EXAUSTÃO EMOCIONAL": [
         "Você sente exaustão emocional relacionada ao trabalho?",
         "Você percebe queda de motivação nas tarefas diárias?",
         "Você sente dificuldade de concentração durante o trabalho?",
     ],
-    "💤 Recuperação e Saúde": [
+    "RECUPERAÇÃO E SAÚDE": [
         "Você sente que o trabalho afeta negativamente sua saúde?",
         "Você percebe piora do sono nas últimas semanas?",
         "Você sente redução da disposição física geral?",
     ]
 }
 
-# =========================
-# HERO
-# =========================
-st.markdown("""
-<div class="hero">
-    <div class="badge">🌿 Bem-Estar Ocupacional</div>
-    <h1>Como você está?</h1>
-    <p>Triagem de risco psicofisiológico baseada no Copenhagen Burnout Inventory (CBI).<br>
-    Suas respostas são confidenciais e levam cerca de <strong style="color:white">3 minutos</strong>.</p>
+# ── HEADER ───────────────────────────────────────────────────
+st.markdown(f"""
+<div class="header">
+    {logo_html}
+    <div class="header-label">TRIAGEM CORPORATIVA<br>BEM-ESTAR OCUPACIONAL</div>
 </div>
 """, unsafe_allow_html=True)
 
-# =========================
-# DADOS DO COLABORADOR
-# =========================
-st.markdown('<div class="section-card">', unsafe_allow_html=True)
-st.markdown("### 👤 Seus dados")
+# ── HERO ─────────────────────────────────────────────────────
+st.markdown("""
+<div class="hero">
+    <div class="eyebrow">📋 Avaliação psicofisiológica</div>
+    <h1>Como você está?</h1>
+    <p>Triagem baseada no Copenhagen Burnout Inventory (CBI). Suas respostas são confidenciais e levam cerca de <strong style="color:#F0EDE8">3 minutos</strong>.</p>
+</div>
+""", unsafe_allow_html=True)
 
+# ── DADOS DO COLABORADOR ──────────────────────────────────────
+st.markdown('<div class="section"><div class="section-title">01 — Identificação</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
     nome  = st.text_input("Nome completo *")
@@ -283,147 +301,113 @@ with col1:
 with col2:
     cargo = st.text_input("Cargo *")
     idade = st.number_input("Idade *", min_value=18, max_value=70, value=30)
-
 st.markdown('</div>', unsafe_allow_html=True)
 
-# =========================
-# QUESTIONÁRIO
-# =========================
-st.markdown("### 📋 Questionário")
-st.markdown("Responda com honestidade. Não há respostas certas ou erradas.")
+# ── QUESTIONÁRIO ──────────────────────────────────────────────
+st.markdown('<div style="margin-bottom:8px; font-family:\'Barlow Condensed\',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.2em; color:#666; text-transform:uppercase;">02 — Questionário</div>', unsafe_allow_html=True)
 
 pontuacoes = []
 num_pergunta = 1
-total_perguntas = sum(len(v) for v in DOMINIOS.values())
 
 for dominio, perguntas in DOMINIOS.items():
-    st.markdown(f'<div class="section-card">', unsafe_allow_html=True)
-    st.markdown(f"**{dominio}**")
+    st.markdown(f'<div class="section"><div class="section-title">{dominio}</div>', unsafe_allow_html=True)
     for pergunta in perguntas:
         resposta = st.radio(
             f"{num_pergunta}. {pergunta}",
             options=list(ESCALA.keys()),
             horizontal=True,
             key=f"q{num_pergunta}",
-            index=None  # força o usuário a escolher
+            index=None
         )
         pontuacoes.append(resposta)
         num_pergunta += 1
     st.markdown('</div>', unsafe_allow_html=True)
 
-# =========================
-# AVISO LGPD
-# =========================
+# ── AVISO ─────────────────────────────────────────────────────
 st.markdown("""
 <div class="aviso">
-    ⚠️ <strong>Aviso:</strong> Esta ferramenta é de triagem e <strong>não fornece diagnóstico clínico</strong>.
-    Os dados coletados são utilizados exclusivamente para apoio a ações de saúde ocupacional.
-    Tratamento conforme a LGPD.
+    ⚠️ Esta ferramenta é de triagem e <strong style="color:#F0EDE8">não fornece diagnóstico clínico</strong>.
+    Dados utilizados exclusivamente para ações de saúde ocupacional. Tratamento em conformidade com a LGPD.
 </div>
 """, unsafe_allow_html=True)
 
-# =========================
-# BOTÃO ENVIAR
-# =========================
 st.markdown("<br>", unsafe_allow_html=True)
 
-if st.button("✅ Enviar minhas respostas"):
-
-    # Validações
+# ── ENVIO ─────────────────────────────────────────────────────
+if st.button("ENVIAR RESPOSTAS"):
     campos_vazios = not all([nome.strip(), email.strip(), setor.strip(), cargo.strip()])
     respostas_incompletas = any(r is None for r in pontuacoes)
 
     if campos_vazios:
-        st.error("⚠️ Preencha todos os campos obrigatórios (Nome, E-mail, Setor, Cargo).")
+        st.error("⚠️ Preencha todos os campos obrigatórios.")
     elif respostas_incompletas:
-        st.error("⚠️ Responda todas as perguntas do questionário antes de enviar.")
+        st.error("⚠️ Responda todas as perguntas antes de enviar.")
     else:
-        # Converter respostas para pontuações
         pts = [ESCALA[r] for r in pontuacoes]
-
         score_total = sum(pts)
         fadiga      = sum(pts[0:4])
         emocional   = sum(pts[4:7])
         recuperacao = sum(pts[7:10])
 
-        # Classificação
         if score_total <= 10:
-            classificacao = "Baixo risco"
-            emoji_class   = "🟢"
-            css_class     = "result-baixo"
+            classificacao = "Baixo risco";   emoji = "🟢"; css = "result-baixo"
             interpretacao = "Baixos sinais de exaustão ocupacional. Continue mantendo seus hábitos de autocuidado."
+            rec = "Manutenção de hábitos saudáveis e prática regular de atividade física."
         elif score_total <= 20:
-            classificacao = "Atenção"
-            emoji_class   = "🟡"
-            css_class     = "result-atencao"
-            interpretacao = "Sinais moderados de fadiga ocupacional. Recomenda-se atenção às estratégias de recuperação."
+            classificacao = "Atenção";        emoji = "🟡"; css = "result-atencao"
+            interpretacao = "Sinais moderados de fadiga ocupacional. Atenção às estratégias de recuperação."
+            rec = "Pausas ativas, estratégias de recuperação e início de programa de exercício físico supervisionado."
         elif score_total <= 30:
-            classificacao = "Alto risco"
-            emoji_class   = "🟠"
-            css_class     = "result-alto"
-            interpretacao = "Importantes sinais de exaustão. Intervenção estruturada com exercício físico é recomendada."
+            classificacao = "Alto risco";    emoji = "🟠"; css = "result-alto"
+            interpretacao = "Importantes sinais de exaustão. Intervenção estruturada é recomendada."
+            rec = "Programa de exercício físico supervisionado, estratégias de recuperação e acompanhamento contínuo."
         else:
-            classificacao = "Risco elevado"
-            emoji_class   = "🔴"
-            css_class     = "result-elevado"
-            interpretacao = "Elevado risco psicofisiológico. Avaliação profissional especializada é fortemente indicada."
+            classificacao = "Risco elevado"; emoji = "🔴"; css = "result-elevado"
+            interpretacao = "Elevado risco psicofisiológico. Avaliação profissional especializada é indicada."
+            rec = "Avaliação profissional urgente. Suporte ocupacional e recuperação psicofisiológica imediata."
 
-        # Salvar no Google Sheets
         dados = {
             "timestamp":    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "nome":         nome,
-            "email":        email,
-            "setor":        setor,
-            "cargo":        cargo,
-            "idade":        idade,
+            "nome": nome, "email": email, "setor": setor, "cargo": cargo, "idade": idade,
             "pontuacoes":   pts,
             "score_total":  score_total,
-            "classificacao": f"{emoji_class} {classificacao}",
-            "fadiga":       fadiga,
-            "emocional":    emocional,
-            "recuperacao":  recuperacao
+            "classificacao": f"{emoji} {classificacao}",
+            "fadiga": fadiga, "emocional": emocional, "recuperacao": recuperacao
         }
 
-        with st.spinner("Salvando suas respostas..."):
+        with st.spinner("Registrando suas respostas..."):
             sucesso = salvar_resposta(dados)
 
         st.markdown("---")
 
-        # Resultado visual
         st.markdown(f"""
-        <div class="result-card {css_class}">
-            <h2>{emoji_class}</h2>
-            <h3>{classificacao}</h3>
-            <p style="font-size:1.5rem; font-weight:600; margin:8px 0">Score: {score_total}/40</p>
+        <div class="result {css}">
+            <h2>{score_total}/40</h2>
+            <h3>{emoji} {classificacao}</h3>
             <p>{interpretacao}</p>
         </div>
         """, unsafe_allow_html=True)
 
-        # Domínios
-        st.markdown("#### 🔬 Análise por Domínio")
         col1, col2, col3 = st.columns(3)
-        with col1: st.metric("🏋️ Fadiga Física",       f"{fadiga}/16")
-        with col2: st.metric("😔 Exaustão Emocional",   f"{emocional}/12")
-        with col3: st.metric("💤 Recuperação e Saúde",  f"{recuperacao}/12")
+        col1.metric("Fadiga Física",       f"{fadiga}/16")
+        col2.metric("Exaustão Emocional",  f"{emocional}/12")
+        col3.metric("Recuperação/Saúde",   f"{recuperacao}/12")
 
-        # Recomendação
-        st.markdown("#### 💡 Recomendação")
-        if score_total <= 10:
-            st.success("Mantenha hábitos saudáveis, pratique atividade física regularmente e faça monitoramento periódico.")
-        elif score_total <= 20:
-            st.warning("Implemente pausas ativas, estratégias de recuperação e incentive a prática regular de exercício físico.")
-        elif score_total <= 30:
-            st.warning("Recomenda-se exercício físico supervisionado, estratégias de recuperação e acompanhamento contínuo.")
-        else:
-            st.error("Procure avaliação profissional especializada. Implemente suporte ocupacional e recuperação psicofisiológica.")
+        st.markdown(f"""
+        <div class="section" style="margin-top:20px">
+            <div class="section-title">💡 Recomendação</div>
+            <p style="color:#999; font-size:0.9rem; line-height:1.7; margin:0">{rec}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
         if sucesso:
-            st.success("✅ Respostas enviadas com sucesso! Obrigado pela participação.")
+            st.success("✅ Respostas registradas com sucesso. Obrigado pela participação.")
         else:
-            st.warning("⚠️ Não foi possível salvar no banco de dados. Entre em contato com o RH.")
+            st.warning("⚠️ Não foi possível salvar. Entre em contato com o RH.")
 
-# =========================
-# RODAPÉ
-# =========================
-st.markdown("---")
-st.caption("Triagem de bem-estar ocupacional • Baseado no Copenhagen Burnout Inventory (CBI) • Uso exclusivo corporativo")
+# ── RODAPÉ ────────────────────────────────────────────────────
+st.markdown("""
+<div class="rodape">
+    MIND IN FIT &nbsp;·&nbsp; Triagem de Bem-Estar Ocupacional &nbsp;·&nbsp; Baseado no Copenhagen Burnout Inventory (CBI)
+</div>
+""", unsafe_allow_html=True)
