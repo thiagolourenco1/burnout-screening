@@ -29,16 +29,16 @@ st.markdown(f"""
 
 html, body, [class*="css"] {{
     font-family: 'Barlow', sans-serif;
-    background-color: #0D0D0D;
-    color: #F0EDE8;
+    background-color: #000000;
+    color: #FFFFFF;
 }}
 
-.main {{ background-color: #0D0D0D; }}
-h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; letter-spacing: 0.02em; }}
+.main {{ background-color: #000000; }}
+h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #FFFFFF; letter-spacing: 0.02em; }}
 
 /* ── HEADER ── */
 .header {{
-    background: #0D0D0D;
+    background: #000000;
     border-bottom: 3px solid #E8470A;
     padding: 24px 0 20px;
     margin-bottom: 40px;
@@ -56,7 +56,7 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #666;
+    color: #FFFFFF;
     text-align: right;
     line-height: 1.4;
 }}
@@ -65,7 +65,7 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
 .hero {{
     border-left: 5px solid #E8470A;
     padding: 28px 32px;
-    background: #161616;
+    background: #0A0A0A;
     margin-bottom: 32px;
 }}
 
@@ -84,11 +84,11 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
     font-weight: 800;
     line-height: 1.1;
     margin: 0 0 12px;
-    color: #F0EDE8;
+    color: #FFFFFF;
 }}
 
 .hero p {{
-    color: #999;
+    color: #FFFFFF;
     font-size: 0.9rem;
     margin: 0;
     line-height: 1.6;
@@ -96,8 +96,8 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
 
 /* ── SECTION ── */
 .section {{
-    background: #161616;
-    border: 1px solid #222;
+    background: #0A0A0A;
+    border: 1px solid #1A1A1A;
     border-top: 3px solid #E8470A;
     border-radius: 2px;
     padding: 28px;
@@ -130,21 +130,21 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
     width: 6px; height: 100%;
     background: currentColor;
 }}
-.result-baixo   {{ border-color: #22C55E; color: #22C55E; background: #0D1A12; }}
-.result-atencao {{ border-color: #EAB308; color: #EAB308; background: #1A1700; }}
-.result-alto    {{ border-color: #E8470A; color: #E8470A; background: #1A0D07; }}
-.result-elevado {{ border-color: #EF4444; color: #EF4444; background: #1A0707; }}
+.result-baixo   {{ border-color: #22C55E; color: #22C55E; background: #000000; }}
+.result-atencao {{ border-color: #EAB308; color: #EAB308; background: #000000; }}
+.result-alto    {{ border-color: #E8470A; color: #E8470A; background: #000000; }}
+.result-elevado {{ border-color: #EF4444; color: #EF4444; background: #000000; }}
 .result h2 {{ font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 800; margin: 0 0 4px; }}
 .result h3 {{ font-size: 1.1rem; font-weight: 600; margin: 0 0 12px; letter-spacing: 0.1em; text-transform: uppercase; }}
-.result p  {{ color: #999; font-size: 0.9rem; margin: 0; }}
+.result p  {{ color: #FFFFFF; font-size: 0.9rem; margin: 0; }}
 
 /* ── AVISO ── */
 .aviso {{
     border-left: 4px solid #E8470A;
-    background: #1A0D07;
+    background: #0A0A0A;
     padding: 14px 18px;
     font-size: 0.82rem;
-    color: #999;
+    color: #FFFFFF;
     margin-top: 24px;
     line-height: 1.6;
 }}
@@ -152,7 +152,7 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
 /* ── BOTÃO ── */
 .stButton>button {{
     background: #E8470A !important;
-    color: white !important;
+    color: #FFFFFF !important;
     border: none !important;
     border-radius: 2px !important;
     padding: 14px 32px !important;
@@ -170,10 +170,10 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
 /* ── INPUTS ── */
 .stTextInput>div>div>input,
 .stNumberInput>div>div>input {{
-    background: #1A1A1A !important;
-    border: 1px solid #2A2A2A !important;
+    background: #0A0A0A !important;
+    border: 1px solid #333333 !important;
     border-radius: 2px !important;
-    color: #F0EDE8 !important;
+    color: #FFFFFF !important;
     font-family: 'Barlow', sans-serif !important;
 }}
 .stTextInput>div>div>input:focus,
@@ -182,19 +182,46 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; lette
     box-shadow: 0 0 0 1px #E8470A !important;
 }}
 
-/* ── RADIO ── */
-.stRadio > label {{ color: #F0EDE8 !important; font-size: 0.9rem !important; }}
-.stRadio [data-testid="stMarkdownContainer"] p {{ color: #F0EDE8 !important; }}
+/* Labels dos inputs */
+.stTextInput label, .stNumberInput label {{ color: #FFFFFF !important; }}
+
+/* ── RADIO — forçar texto branco em todos os estados ── */
+.stRadio > label {{ color: #FFFFFF !important; font-size: 0.9rem !important; }}
+.stRadio label {{ color: #FFFFFF !important; }}
+.stRadio label p {{ color: #FFFFFF !important; }}
+.stRadio span {{ color: #FFFFFF !important; }}
+div[data-testid="stRadio"] {{ color: #FFFFFF !important; }}
+div[data-testid="stRadio"] label {{ color: #FFFFFF !important; }}
+div[data-testid="stRadio"] label span {{ color: #FFFFFF !important; }}
+div[data-testid="stRadio"] p {{ color: #FFFFFF !important; }}
+div[data-testid="stRadio"] div {{ color: #FFFFFF !important; }}
+.stRadio [data-testid="stMarkdownContainer"] p {{ color: #FFFFFF !important; }}
+.stRadio [data-testid="stMarkdownContainer"] {{ color: #FFFFFF !important; }}
+
+/* ── Texto geral das perguntas e labels ── */
+p {{ color: #FFFFFF !important; }}
+label {{ color: #FFFFFF !important; }}
+.stMarkdown p {{ color: #FFFFFF !important; }}
+[data-testid="stMarkdownContainer"] p {{ color: #FFFFFF !important; }}
+[data-testid="stText"] {{ color: #FFFFFF !important; }}
+small {{ color: #CCCCCC !important; }}
 
 /* ── RODAPÉ ── */
 footer {{ visibility: hidden; }}
 div[data-testid="stSidebar"] {{ display: none; }}
 
+/* ── Forçar fundo preto em todos os containers do Streamlit ── */
+[data-testid="stAppViewContainer"] {{ background-color: #000000 !important; }}
+[data-testid="stHeader"] {{ background-color: #000000 !important; }}
+[data-testid="block-container"] {{ background-color: #000000 !important; }}
+section[data-testid="stSidebar"] {{ background-color: #000000 !important; }}
+.stApp {{ background-color: #000000 !important; }}
+
 .rodape {{
     text-align: center;
     padding: 32px 0 16px;
     font-size: 0.75rem;
-    color: #444;
+    color: #FFFFFF;
     letter-spacing: 0.05em;
     border-top: 1px solid #1A1A1A;
     margin-top: 40px;

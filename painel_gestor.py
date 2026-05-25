@@ -30,9 +30,9 @@ st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500&display=swap');
 
-html, body, [class*="css"] {{ font-family: 'Barlow', sans-serif; background-color: #0D0D0D; color: #F0EDE8; }}
-.main {{ background-color: #0D0D0D; }}
-h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; }}
+html, body, [class*="css"] {{ font-family: 'Barlow', sans-serif; background-color: #000000; color: #FFFFFF; }}
+.main {{ background-color: #000000; }}
+h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #FFFFFF; }}
 
 .logo {{ height: 44px; object-fit: contain; }}
 .logo-text {{ font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: #E8470A; }}
@@ -40,30 +40,30 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; }}
 .login-wrap {{
     max-width: 400px;
     margin: 100px auto;
-    background: #161616;
-    border: 1px solid #222;
+    background: #0A0A0A;
+    border: 1px solid #1A1A1A;
     border-top: 4px solid #E8470A;
     padding: 48px 40px;
     text-align: center;
 }}
-.login-wrap h2 {{ font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }}
-.login-wrap p {{ color: #666; font-size: 0.85rem; margin-bottom: 32px; }}
+.login-wrap h2 {{ font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; color: #FFFFFF; }}
+.login-wrap p {{ color: #FFFFFF; font-size: 0.85rem; margin-bottom: 32px; }}
 
 .kpi {{
-    background: #161616;
-    border: 1px solid #222;
+    background: #0A0A0A;
+    border: 1px solid #1A1A1A;
     border-top: 3px solid #E8470A;
     padding: 20px;
     text-align: center;
 }}
 .kpi .val {{ font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 800; margin: 6px 0 2px; }}
-.kpi .lbl {{ font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: #666; }}
+.kpi .lbl {{ font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: #FFFFFF; }}
 .verde   {{ color: #22C55E; }} .amarelo {{ color: #EAB308; }}
 .laranja {{ color: #E8470A; }} .vermelho {{ color: #EF4444; }}
 
 .row-card {{
-    background: #161616;
-    border: 1px solid #1E1E1E;
+    background: #0A0A0A;
+    border: 1px solid #1A1A1A;
     border-left: 4px solid #E8470A;
     padding: 14px 18px;
     margin: 6px 0;
@@ -71,16 +71,17 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; }}
     align-items: center;
     justify-content: space-between;
     font-size: 0.88rem;
+    color: #FFFFFF;
 }}
 
 .badge {{ display: inline-block; padding: 2px 10px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }}
-.b-baixo   {{ background: #0D1A12; color: #22C55E; border: 1px solid #22C55E44; }}
-.b-atencao {{ background: #1A1700; color: #EAB308; border: 1px solid #EAB30844; }}
-.b-alto    {{ background: #1A0D07; color: #E8470A; border: 1px solid #E8470A44; }}
-.b-elevado {{ background: #1A0707; color: #EF4444; border: 1px solid #EF444444; }}
+.b-baixo   {{ background: #000000; color: #22C55E; border: 1px solid #22C55E; }}
+.b-atencao {{ background: #000000; color: #EAB308; border: 1px solid #EAB308; }}
+.b-alto    {{ background: #000000; color: #E8470A; border: 1px solid #E8470A; }}
+.b-elevado {{ background: #000000; color: #EF4444; border: 1px solid #EF4444; }}
 
 .stButton>button {{
-    background: #E8470A !important; color: white !important;
+    background: #E8470A !important; color: #FFFFFF !important;
     border: none !important; border-radius: 2px !important;
     font-family: 'Barlow Condensed', sans-serif !important;
     font-size: 0.9rem !important; font-weight: 700 !important;
@@ -88,13 +89,18 @@ h1, h2, h3 {{ font-family: 'Barlow Condensed', sans-serif; color: #F0EDE8; }}
 }}
 
 .stTextInput>div>div>input {{
-    background: #1A1A1A !important; border: 1px solid #2A2A2A !important;
-    border-radius: 2px !important; color: #F0EDE8 !important;
+    background: #0A0A0A !important; border: 1px solid #333333 !important;
+    border-radius: 2px !important; color: #FFFFFF !important;
 }}
 .stTextInput>div>div>input:focus {{ border-color: #E8470A !important; }}
+.stTextInput label {{ color: #FFFFFF !important; }}
+.stSelectbox label {{ color: #FFFFFF !important; }}
+div[data-testid="stSelectbox"] div {{ color: #FFFFFF !important; background: #0A0A0A !important; }}
 
-div[data-testid="stSidebar"] {{ background: #0D0D0D !important; border-right: 1px solid #1A1A1A !important; }}
-div[data-testid="stSidebar"] .stRadio label {{ color: #F0EDE8 !important; }}
+div[data-testid="stSidebar"] {{ background: #000000 !important; border-right: 1px solid #1A1A1A !important; }}
+div[data-testid="stSidebar"] .stRadio label {{ color: #FFFFFF !important; }}
+div[data-testid="stSidebar"] p {{ color: #FFFFFF !important; }}
+div[data-testid="stSidebar"] span {{ color: #FFFFFF !important; }}
 footer {{ visibility: hidden; }}
 
 .page-title {{
@@ -103,7 +109,7 @@ footer {{ visibility: hidden; }}
     border-left: 5px solid #E8470A;
     padding-left: 16px;
     margin-bottom: 24px;
-    color: #F0EDE8;
+    color: #FFFFFF;
 }}
 </style>
 """, unsafe_allow_html=True)
