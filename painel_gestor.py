@@ -814,7 +814,7 @@ elif pagina == "Gerenciar Respostas":
     tab1,tab2=st.tabs(["🗑️ Excluir por Nome","☑️ Excluir Múltiplas"])
     with tab1:
         nomes=sorted(df["nome"].dropna().unique().tolist())
-        sel=st.selectbox("Colaborador","",nomes if nomes else [""],label_visibility="collapsed")
+        sel=st.selectbox("Colaborador", nomes if nomes else [""], label_visibility="collapsed")
         if sel:
             dp=df[df["nome"]==sel].sort_values("timestamp",ascending=False)
             st.markdown(f"**{len(dp)} resposta(s)** de **{sel}**")
