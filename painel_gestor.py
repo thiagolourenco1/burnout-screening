@@ -39,30 +39,80 @@ html, body, [class*="css"] { font-family:'Barlow',sans-serif; background:#000 !i
 p, label, span, div { color:#fff !important; }
 
 /* ══ SIDEBAR ══ */
-div[data-testid="stSidebar"] {
-    background: #000000 !important;
-    border-right: 1px solid #111 !important;
-    width: 220px !important;
+div[data-testid="stSidebar"],
+div[data-testid="stSidebar"] > div,
+div[data-testid="stSidebar"] > div > div,
+div[data-testid="stSidebar"] > div > div > div,
+section[data-testid="stSidebar"] {
+    background: #E8470A !important;
+    border-right: none !important;
+    width: 260px !important;
+    min-width: 260px !important;
 }
-div[data-testid="stSidebar"] > div { padding: 0 !important; }
 div[data-testid="stSidebar"] * { color: #fff !important; }
-
-/* Esconde radio nativo */
 div[data-testid="stSidebar"] .stRadio { display:none !important; }
+div[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0 !important; }
 
-/* Botões da sidebar — transparentes e sobrepostos ao nav-item */
-div[data-testid="stSidebar"] .stButton { margin: 0 !important; }
+div[data-testid="stSidebar"] .stButton { margin: 0 !important; padding: 0 !important; }
 div[data-testid="stSidebar"] .stButton > button {
-    opacity: 0 !important;
+    opacity: 1 !important;
     position: relative !important;
-    margin-top: -40px !important;
+    margin: 0 !important;
     width: 100% !important;
-    height: 40px !important;
-    cursor: pointer !important;
-    z-index: 99 !important;
+    height: auto !important;
+    padding: 10px 16px !important;
     border: none !important;
+    border-left: 3px solid transparent !important;
+    border-radius: 0 !important;
     background: transparent !important;
-    display: block !important;
+    color: rgba(255,255,255,0.7) !important;
+    font-family: 'Barlow Condensed', sans-serif !important;
+    font-size: .78rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .12em !important;
+    text-transform: uppercase !important;
+    text-align: left !important;
+    transition: all .15s !important;
+}
+div[data-testid="stSidebar"] .stButton > button:hover {
+    background: rgba(0,0,0,0.15) !important;
+    color: #fff !important;
+    border-left-color: #fff !important;
+}
+div[data-testid="stSidebar"] .stRadio { display:none !important; }
+div[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0 !important; }
+
+/* Todos os botões da sidebar */
+div[data-testid="stSidebar"] .stButton > button {
+    opacity: 1 !important;
+    position: relative !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 10px 16px !important;
+    border: none !important;
+    border-left: 3px solid rgba(255,255,255,0.3) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    font-family: 'Barlow Condensed', sans-serif !important;
+    font-size: .82rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .12em !important;
+    text-transform: uppercase !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    transition: all .15s !important;
+    -webkit-appearance: none !important;
+}
+div[data-testid="stSidebar"] .stButton > button:hover {
+    background: rgba(255,255,255,.04) !important;
+    color: #ccc !important;
+    border-left-color: #333 !important;
 }
 
 /* ── Nav wrapper ── */
@@ -585,34 +635,40 @@ SDT_INFO = [
 ]
 
 with st.sidebar:
-    st.markdown(f"""
-    <div class="sb-wrap">
-        <div class="sb-logo">
-            {logo_tag}
-            <div class="sb-brand">Painel do Gestor</div>
-        </div>
-        <div class="sb-section">Navegação</div>
-    """, unsafe_allow_html=True)
+    params = st.query_params
+    if "page" in params:
+        st.session_state.pagina = params["page"]
+        st.query_params.clear()
+        st.rerun()
 
-    for name, icon_d, _ in PAGES:
-        active = "active" if st.session_state.pagina == name else ""
-        st.markdown(f"""
-        <div class="sb-item {active}">
-            <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="{icon_d}"/>
-            </svg>
-            <span class="sb-label">{name}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        if st.button(name, key=f"nb_{name}"):
+    MENU = [
+        ("Dashboard",           "▣"),
+        ("Colaboradores",       "⊞"),
+        ("Por Setor",           "⊟"),
+        ("Relatório Individual","▤"),
+        ("Gerenciar Respostas", "⊠"),
+        ("Motivação",           "⚡"),
+    ]
+
+    if logo_b64:
+        st.markdown(f'<img src="data:image/jpeg;base64,{logo_b64}" style="height:32px;object-fit:contain;display:block;margin-bottom:8px">', unsafe_allow_html=True)
+
+    for name, icon in MENU:
+        active = st.session_state.pagina == name
+        if st.button(
+            f"{'▶' if active else '  '} {icon} {name}",
+            key=f"nb_{name}",
+            use_container_width=True,
+            type="primary" if active else "secondary"
+        ):
             st.session_state.pagina = name
             st.rerun()
 
-    st.markdown('<div class="sb-divider"></div><div class="sb-footer">', unsafe_allow_html=True)
+    st.markdown("---")
     st.caption(f"⏱ {datetime.now().strftime('%H:%M')}")
-    if st.button("SAIR", key="nb_sair"):
-        st.session_state.auth = False; st.rerun()
-    st.markdown('</div></div>', unsafe_allow_html=True)
+    if st.button("⏻ SAIR", key="nb_sair", use_container_width=True):
+        st.session_state.auth = False
+        st.rerun()
 
 pagina = st.session_state.pagina
 
